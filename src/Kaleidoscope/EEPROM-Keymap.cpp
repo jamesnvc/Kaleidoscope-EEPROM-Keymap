@@ -107,6 +107,21 @@ bool EEPROMKeymap::focusKeymap(const char *command) {
   return true;
 }
 
+bool EEPROMKeymap::focusKeymapIncremental(const char *command) {
+  if (strcmp_P(command, PSTR("keymap.map.key")) != 0)
+    return false;
+
+
+  uint8_t layer = Serial.parseInt();
+  uint8_t index = Serial.parseInt();
+  Key newKey = parseKey();
+  uint16_t loc = keymap_base_ + (((layer * ROWS * COLS) + index) * 2);
+  EEPROM.update(loc, key.flags);
+  EEPROM.update(loc + 1, key.keyCode);
+
+  return true;
+}
+
 bool EEPROMKeymap::focusKeymapTransfer(const char *command) {
   if (strcmp_P(command, PSTR("keymap.transfer")) != 0)
     return false;
